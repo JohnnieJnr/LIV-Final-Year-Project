@@ -24,11 +24,15 @@ class Account(AbstractBaseUser):
 
     objects = MyAccountManager()
 
-    def __str__(self):
-        return self.email
 
     def has_perm(self, perm, obj=None):
         return self.is_superuser
 
     def has_module_perms(self, add_label):
         return True
+
+    def __str__(self):
+        return self.lastname + ' ' + self.firstname
+
+    def get_full_name(self):
+        return f"{self.firstname} {self.lastname}"
