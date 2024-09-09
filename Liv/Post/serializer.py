@@ -14,14 +14,14 @@ class ListPostSerial(serializers.ModelSerializer):
 
 
 class CreatePostSerializer(serializers.ModelSerializer):
-    image = serializers.FileField()
+    image = serializers.FileField(required=False)
 
     class Meta:
         model = Posts
-        fields = ('content', 'created_at', 'user', 'image')
+        fields = ('content', 'created_at',  'image')
 
         def save(self, *args, **kwargs):
             content = self.validated_data.get('content')
             image = self.validated_data.get('image')
-            user = self.validated_data.get('user')
+            user = self.context['request'].user
 
