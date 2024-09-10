@@ -43,19 +43,17 @@ class ListPostView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
-
 class CreatePost(APIView):
     permission_classes = [IsAuthenticated]
-    @swagger_auto_schema(
-        operation_description = "Create a new post",
-        request_body = openapi.Schema(
-        type = openapi.TYPE_OBJECT,
-            required = ['content' ],
-            properties = {
-                'content': openapi.Schema(type = openapi.TYPE_STRING, description='Content'),
-                'image': openapi.Schema(type = openapi.TYPE_FORMAT_BINARY, description='image'),
 
+    @swagger_auto_schema(
+        operation_description="Create a new post",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['content'],
+            properties={
+                'content': openapi.Schema(type=openapi.TYPE_STRING, description='Content'),
+                'image': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_BINARY, description='Picture'),
             }
         ),
         response={
@@ -65,7 +63,6 @@ class CreatePost(APIView):
             403: 'Forbidden',
             500: 'Internal Server Error',
 
-
         },
     )
     def post(self, request):
@@ -74,11 +71,3 @@ class CreatePost(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.error, status=status.HTTP__400_BAD_REQUEST)
-
-
-
-
-
-
-
-

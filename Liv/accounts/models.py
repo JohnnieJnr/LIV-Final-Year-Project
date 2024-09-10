@@ -24,7 +24,6 @@ class Account(AbstractBaseUser):
 
     objects = MyAccountManager()
 
-
     def has_perm(self, perm, obj=None):
         return self.is_superuser
 
@@ -32,7 +31,7 @@ class Account(AbstractBaseUser):
         return True
 
     def __str__(self):
-        return self.lastname + ' ' + self.firstname
+        return self.last_name + ' ' + self.first_name
 
     def get_full_name(self):
-        return f"{self.firstname} {self.lastname}"
+        return f"{self.first_name} {self.last_name}"

@@ -18,5 +18,5 @@ class Posts(models.Model):
     def clean(self):
         if self.image:
             max_size = 1 * 1024 * 1024 * 1024
-            if self.picture.size > max_size:
+            if self.image.size > max_size:
                 raise ValidationError("Image file too large ( > 1GB )")
