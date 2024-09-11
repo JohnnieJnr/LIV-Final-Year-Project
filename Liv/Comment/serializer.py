@@ -1,13 +1,15 @@
 from rest_framework import serializers
-from .models import Posts
+from .models import Comments
+from Post.models import Posts
 
 
-class ListPostSerial(serializers.ModelSerializer):
+class ListCommentsSerial(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
+    post = serializers.StringRelatedField() 
 
     class Meta:
-        model = Posts
-        fields = ('content', 'created_at', 'user', 'image')
+        model = Comments
+        fields = ('content', 'created_at', 'user', 'post')
 
     def get_user(self, obj):
         return obj.user.username if obj.user else None

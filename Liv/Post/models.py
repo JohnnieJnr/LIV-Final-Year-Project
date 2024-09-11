@@ -15,6 +15,9 @@ class Posts(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='updated at', auto_now=True)
 
+    def __str__(self):
+        return self.content
+
     def clean(self):
         if self.image:
             max_size = 1 * 1024 * 1024 * 1024

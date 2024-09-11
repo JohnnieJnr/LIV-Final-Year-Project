@@ -10,6 +10,8 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 import random
 import string
+# from django.views.decorators.csrf import csrf_exempt
+# from django.utils.decorators import method_decorator
 
 
 def generate_random_username(length=8):
@@ -20,6 +22,7 @@ def generate_random_username(length=8):
     return username
 
 
+# @method_decorator(csrf_exempt, name='dispatch')
 class RegistrationView(APIView):
     @swagger_auto_schema(
         operation_description="Create a new User",
@@ -72,6 +75,8 @@ class LogoutView(APIView):
         return Response({'msg': 'Successfully Logged out'}, status=status.HTTP_200_OK)
 
 
+
+# @method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     @swagger_auto_schema(
         operation_description="User login",
@@ -114,6 +119,7 @@ class LoginView(APIView):
             return Response({'msg': 'Login Success'}, status=status.HTTP_200_OK)
 
         return Response({'msg': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 @permission_classes([IsAuthenticated, IsAdminUser])
 class UserList(APIView):
