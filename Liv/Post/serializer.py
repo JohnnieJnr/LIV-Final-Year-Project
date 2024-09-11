@@ -3,14 +3,14 @@ from .models import Posts
 
 
 class ListPostSerial(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()
+    user = serializers.SerializerMethodField()
 
     class Meta:
         model = Posts
         fields = ('content', 'created_at', 'user', 'image')
 
-        def get_user(self, obj):
-            return obj.user.last_name if obj.user else None
+    def get_user(self, obj):
+        return obj.user.username if obj.user else None
 
 
 class CreatePostSerializer(serializers.ModelSerializer):
