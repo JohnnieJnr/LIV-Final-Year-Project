@@ -39,9 +39,17 @@ class ListCommentView(APIView):
             500: 'Internal Server Error',
         }
     )
+      # GET method to retrieve the list of comments
     def get(self, request):
+                # Query the Comments model to get all comments from the database
         coms = Comments.objects.all()
+
+         # Serialize the comments using the ListCommentsSerial serializer
+        # The 'many=True' argument is used because we're serializing multiple comment objects
+        # 'context' is passed to include request data for the serializer
         serializer = ListCommentsSerial(coms, many=True, context={'request': request})
+
+                # Return the serialized comment data in the HTTP response with a status of 200 (OK)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

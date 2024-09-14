@@ -17,13 +17,16 @@ import string
 def generate_random_username(length=8):
     while True:
         username = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
+                # Check if the generated username already exists in the Account model
         if not Account.objects.filter(username=username).exists():
-            break
-    return username
+            break   # If it doesn't exist, exit the loop
+    return username  # Return the unique username
 
 
 # @method_decorator(csrf_exempt, name='dispatch')
 class RegistrationView(APIView):
+        #  Documentation for the registration API
+
     @swagger_auto_schema(
         operation_description="Create a new User",
         request_body=openapi.Schema(
@@ -54,6 +57,7 @@ class RegistrationView(APIView):
 
 
 class LogoutView(APIView):
+        # Swagger documentation for the logout API
     @swagger_auto_schema(
         operation_description="User logout",
         responses={
@@ -71,6 +75,7 @@ class LogoutView(APIView):
         }
     )
     def post(self, request):
+                # Log the user out
         logout(request)
         return Response({'msg': 'Successfully Logged out'}, status=status.HTTP_200_OK)
 
@@ -78,6 +83,7 @@ class LogoutView(APIView):
 
 # @method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
+        # Documentation for the login API
     @swagger_auto_schema(
         operation_description="User login",
         request_body=openapi.Schema(
@@ -104,20 +110,29 @@ class LoginView(APIView):
         }
     )
     def post(self, request):
+                # Check if the required fields (email and password) are in the request data
         if 'email' not in request.data or 'password' not in request.data:
             return Response({'msg': 'Credentials missing'}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Retrieve email and password from the request data
         email = request.data['email']
         password = request.data['password']
-        user = authenticate(request, email=email, password=password)
 
+                # Authenticate the user
+        user = authenticate(request, email=email, password=password)
+       
+        # If the user is authenticated
         if user is not None:
+                        # Generate a random username for the user (if needed)
             user.username = generate_random_username()
+                        # Save the user details
             user.save()
 
+            # Log the user in
             login(request, user)
             return Response({'msg': 'Login Success'}, status=status.HTTP_200_OK)
-
+        
+                # If authentication fails, return a 401 (Unauthorized) response
         return Response({'msg': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
@@ -152,6 +167,7 @@ class UserList(APIView):
         }
     )
     def get(self, request):
+                # Query all users from the Account model
         user = Account.objects.all()
         serializer = AccountSerializer(user, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
