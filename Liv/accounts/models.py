@@ -5,6 +5,7 @@ from .manager import MyAccountManager
 
 # Create your models here.
 
+# Custom user model for managing user accounts
 class Account(AbstractBaseUser):
     first_name = models.CharField(max_length=60)
     last_name = models.CharField(max_length=50)
@@ -19,17 +20,21 @@ class Account(AbstractBaseUser):
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
+    # The field used to log in users (in this case, email instead of username)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['last_name', 'first_name', 'phone']
 
     objects = MyAccountManager()
 
+  # Permissions methods
+    # This method checks if the user has a specific permission (admins or superusers can bypass)
     def has_perm(self, perm, obj=None):
         return self.is_superuser
 
     def has_module_perms(self, add_label):
         return True
-
+    
+ # String representation of the user object (displays last name and first name)
     def __str__(self):
         return self.last_name + ' ' + self.first_name
 
