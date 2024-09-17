@@ -69,12 +69,15 @@ INSTALLED_APPS = [
     'accounts',
     'Comment',
     'Post',
+    'eduResources',
+    'event',
     'rest_framework',
     'drf_yasg',
     "corsheaders",
 ]
 
 MIDDLEWARE = [
+    # 'Liv.Liv.DisableCsrfOnApiView',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
