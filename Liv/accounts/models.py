@@ -1,3 +1,5 @@
+import random
+import string
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from .manager import MyAccountManager
@@ -18,6 +20,20 @@ class Account(AbstractBaseUser):
     is_active = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+
+    def generate_random_username(self, length=8):
+        """Generate a random username."""
+        while True:
+            username = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
+            if not Account.objects.filter(username=username).exists():
+                break
+        return username
+
+    def save(self, *args, **kwargs):
+        """Override save method to automatically generate a username if none is provided."""
+        if not self.username:
+            self.username = self.generate_random_username()
+        super(Account, self).save(*args, **kwargs)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['last_name', 'first_name', 'phone']

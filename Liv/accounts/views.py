@@ -1,3 +1,5 @@
+import random
+import string
 from .serializer import AccountSerializer, AccountRegistrationSerializer
 from .models import Account
 from rest_framework.views import APIView
@@ -8,22 +10,21 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-import random
-import string
-# from django.views.decorators.csrf import csrf_exempt
-# from django.utils.decorators import method_decorator
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import AllowAny
 
 
 def generate_random_username(length=8):
     while True:
         username = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
         if not Account.objects.filter(username=username).exists():
-            break
-    return username
+            return username
 
 
-# @method_decorator(csrf_exempt, name='dispatch')
 class RegistrationView(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [AllowAny]
+
     @swagger_auto_schema(
         operation_description="Create a new User",
         request_body=openapi.Schema(
@@ -32,7 +33,8 @@ class RegistrationView(APIView):
             properties={
                 'last_name': openapi.Schema(type=openapi.TYPE_STRING),
                 'first_name': openapi.Schema(type=openapi.TYPE_STRING),
-                'phone': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'phone': openapi.Schema(type=openapi.TYPE_STRING),
+                'email': openapi.Schema(type=openapi.TYPE_STRING),
                 'password': openapi.Schema(type=openapi.TYPE_STRING),
                 'password2': openapi.Schema(type=openapi.TYPE_STRING),
             }
@@ -75,9 +77,11 @@ class LogoutView(APIView):
         return Response({'msg': 'Successfully Logged out'}, status=status.HTTP_200_OK)
 
 
-
 # @method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [AllowAny]
+
     @swagger_auto_schema(
         operation_description="User login",
         request_body=openapi.Schema(
@@ -109,19 +113,18 @@ class LoginView(APIView):
 
         email = request.data['email']
         password = request.data['password']
+
         user = authenticate(request, email=email, password=password)
 
         if user is not None:
-            user.username = generate_random_username()
-            user.save()
-
             login(request, user)
+
             return Response({'msg': 'Login Success'}, status=status.HTTP_200_OK)
 
         return Response({'msg': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-@permission_classes([IsAuthenticated, IsAdminUser])
+# @permission_classes([IsAuthenticated, IsAdminUser])
 class UserList(APIView):
     @swagger_auto_schema(
         operation_description="List Users",
