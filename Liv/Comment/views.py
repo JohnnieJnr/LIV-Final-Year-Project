@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from .models import Comments
-from .serializer import ListCommentsSerial
+from .serializer import ListCommentsSerial, CreateCommentsSerializer
 
 
 # Create your views here.
@@ -39,18 +39,40 @@ class ListCommentView(APIView):
             500: 'Internal Server Error',
         }
     )
-      # GET method to retrieve the list of comments
     def get(self, request):
-                # Query the Comments model to get all comments from the database
         coms = Comments.objects.all()
-
-         # Serialize the comments using the ListCommentsSerial serializer
-        # The 'many=True' argument is used because we're serializing multiple comment objects
-        # 'context' is passed to include request data for the serializer
         serializer = ListCommentsSerial(coms, many=True, context={'request': request})
-
-                # Return the serialized comment data in the HTTP response with a status of 200 (OK)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # Create your views here.
+class CreateComment(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Create a new Comment",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['content'],
+            properties={
+                'content': openapi.Schema(type=openapi.TYPE_STRING, description='Content'),
+                'user': openapi.Schema(type=openapi.TYPE_STRING, description='User'),
+                'post': openapi.Schema(type=openapi.TYPE_STRING, description='Post'),
+                'image': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_BINARY, description='Picture'),
+            }
+        ),
+        response={
+            201: openapi.Response(description='Comments created successfully'),
+            400: 'Bad Request',
+            401: 'Unauthorized',
+            403: 'Forbidden',
+            500: 'Internal Server Error',
+
+        },
+    )
+    def post(self, request):
+        serializer = CreateCommentsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.error, status=status.HTTP__400_BAD_REQUEST)
