@@ -28,3 +28,9 @@ class CreateCommentsSerializer(serializers.ModelSerializer):
             user = self.context['request'].user
             user = self.context['request'].post
 
+        def get_picture_url(self, obj):
+            request = self.context.get('request')
+            if request and obj.image:
+                return request.build_absolute_uri(obj.image.url)
+            return None
+
