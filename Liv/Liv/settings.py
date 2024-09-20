@@ -73,7 +73,7 @@ INSTALLED_APPS = [
     'event',
     'rest_framework',
     'drf_yasg',
-    # "corsheaders",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -87,7 +87,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    # "corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = 'Liv.urls'
