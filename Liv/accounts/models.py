@@ -17,9 +17,11 @@ class Account(AbstractBaseUser):
     date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
     is_admin = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+
+    objects = MyAccountManager()
 
     def generate_random_username(self, length=8):
         """Generate a random username."""
@@ -37,8 +39,6 @@ class Account(AbstractBaseUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['last_name', 'first_name', 'phone']
-
-    objects = MyAccountManager()
 
     def has_perm(self, perm, obj=None):
         return self.is_superuser
