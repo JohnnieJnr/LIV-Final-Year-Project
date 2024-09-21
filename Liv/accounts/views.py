@@ -108,14 +108,17 @@ class LoginView(APIView):
     def post(self, request):
         if 'email' not in request.data or 'password' not in request.data:
             return Response({'msg': 'Credentials missing'}, status=status.HTTP_400_BAD_REQUEST)
-        email = request.POST['email']
-        password = request.POST['password']
+
+        email = request.data.get('email')
+        password = request.data.get('password')
+
         user = authenticate(request, email=email, password=password)
+
         if user is not None:
             login(request, user)
             return Response({'msg': 'Login Success'}, status=status.HTTP_200_OK)
-        return Response({'msg': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
+        return Response({'msg': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 # @permission_classes([IsAuthenticated, IsAdminUser])
 class UserList(APIView):
