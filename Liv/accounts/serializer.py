@@ -45,11 +45,13 @@ class AccountRegistrationSerializer(serializers.ModelSerializer):
 
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
-        # The serializer is tied to the Account model
+        # The serializer is tied to the Account model  serializer converts the model int json
         model = Account
-        # Fields to be serialized: general account information including first name, last name, email, phone, and account metadata (date joined, last login, etc.)
+        # Fields to be serialized: general account information including first name, last name, email, phone,
+        # and account metadata (date joined, last login, etc.)
         fields = (
-        'last_name', 'first_name', 'email', 'phone', 'username', 'date_joined', 'last_login', 'is_active', 'is_admin')
+            'id', 'last_name', 'first_name', 'email', 'phone', 'username', 'date_joined', 'last_login', 'is_active',
+            'is_admin')
 
 
 class AccountDetailsSerializer(serializers.ModelSerializer):

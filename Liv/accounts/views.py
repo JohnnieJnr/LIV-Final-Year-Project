@@ -1,5 +1,6 @@
 import random
 import string
+from django.http import Http404
 from .serializer import AccountSerializer, AccountRegistrationSerializer
 from .models import Account
 from rest_framework.views import APIView
@@ -155,3 +156,17 @@ class UserList(APIView):
         user = Account.objects.all()
         serializer = AccountSerializer(user, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AccountDetail(APIView):
+
+    def get_object(self, pk):
+        try:
+            return Account.objects.get(pk=pk)
+        except Account.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        account = self.get_object(pk)
+        serializer = AccountSerializer(account)
+        return Response(serializer.data)
