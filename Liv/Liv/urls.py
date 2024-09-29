@@ -40,6 +40,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('post/', include('Post.urls')),
     path('comm/', include('Comment.urls')),
+    path('col/', include('counseller.urls')),
     path('edu/', include('eduResources.urls')),
     path('eve/', include('event.urls')),
 
