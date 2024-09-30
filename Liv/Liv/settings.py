@@ -74,7 +74,7 @@ INSTALLED_APPS = [
     'event',
     'rest_framework',
     'drf_yasg',
-   # "corsheaders",
+   "corsheaders",
 ]
 
 MIDDLEWARE = [
